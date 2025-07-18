@@ -105,7 +105,7 @@ def load_sample_data():
         for _ in range(daily_queries):
             # Random time during business hours (8 AM - 7 PM) for weekdays
             if current_date.weekday() < 5:
-                hour = random.choices(range(8, 19), weights=[1,2,3,4,5,6,7,8,7,6,4,3], k=1)[0]
+                hour = random.choices(range(8, 19), weights=[1,2,3,4,5,6,7,8,7,6,4], k=1)[0]
             else:
                 hour = random.randint(9, 17)
             
