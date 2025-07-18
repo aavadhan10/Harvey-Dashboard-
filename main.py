@@ -626,54 +626,43 @@ def main():
             fig_retention.update_layout(height=300, showlegend=False)
             st.plotly_chart(fig_retention, use_container_width=True)
     
-    # Calculate key user metrics - correctly reflecting the extremely low unique user counts
-    # In the actual data, we have only 3-8 unique users per day as shown in the screenshot
-    
-    # Updated insights based on the actual low numbers shown in the graph
+    # Trend insights text box matching Harvey's actual metrics
     st.markdown("""
     <div style="border-left: 4px solid #ef553b; background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-top: 20px;">
         <h3 style="margin-top: 0; color: #2c3e50;">⚠️ Critical Usage Concerns</h3>
         
-        <p><strong>Alarming User Engagement Reality:</strong> Despite having 23 registered accounts, our actual daily usage is dramatically lower:</p>
+        <p><strong>Extremely Limited Daily Usage:</strong> The Harvey AI platform shows minimal daily engagement:</p>
         
         <div style="background-color: #fff; border-radius: 5px; padding: 10px; margin: 10px 0; border: 1px solid #ddd;">
-            <p style="font-weight: bold; color: #ef553b; margin-bottom: 5px;">Active User Metrics</p>
+            <p style="font-weight: bold; color: #ef553b; margin-bottom: 5px;">Usage Reality</p>
             <ul style="margin-top: 0;">
-                <li><strong>Daily Active Users (DAU):</strong> Only 3-8 attorneys use Harvey AI on any given day</li>
-                <li><strong>Average DAU:</strong> Approximately 4.2 users daily (out of 150+ attorneys at the firm)</li>
-                <li><strong>Zero-usage days:</strong> Multiple days show no platform usage whatsoever</li>
-                <li><strong>Weekend usage:</strong> Almost entirely non-existent</li>
-                <li><strong>Usage intensity:</strong> Even active users average only 1-2 queries per day</li>
+                <li><strong>Typical daily users:</strong> 0-2 attorneys (as shown in Harvey's dashboard)</li>
+                <li><strong>Highest usage days:</strong> Only 8 users maximum on any single day (May 3)</li>
+                <li><strong>Zero-usage periods:</strong> Entire weeks show no platform activity</li>
+                <li><strong>Total queries:</strong> Only 1.7K queries over 4+ months across all 23 registered users</li>
             </ul>
         </div>
         
-        <p><strong>Catastrophic ROI:</strong> With enterprise licensing costs of ~$75,000 annually and only 4-5 daily users:</p>
+        <p><strong>Feature Adoption Failure:</strong> Usage is concentrated in basic features with minimal adoption of advanced functionality:</p>
         <ul>
-            <li>Effective cost per daily active user: <strong>$18,750/year</strong></li>
-            <li>Cost per query: Approximately <strong>$45-$65</strong> based on current usage patterns</li>
-            <li>Estimated cost savings from AI: Not measurable due to minimal usage</li>
+            <li>Most users interact with only the most basic document features</li>
+            <li>Advanced features like Translation and Redline show near-zero adoption</li>
+            <li>The Word Add-In integration is virtually unused</li>
         </ul>
         
-        <p><strong>Critical Adoption Failure:</strong> The platform is functionally unused by the vast majority of the firm:</p>
-        <ul>
-            <li><strong>Adoption rate:</strong> Less than 3% of attorneys are daily users</li>
-            <li><strong>Advanced features:</strong> Nearly zero adoption across specialized tools</li>
-            <li><strong>Practice penetration:</strong> Entire practice groups show no usage whatsoever</li>
-        </ul>
-        
-        <p><strong>EMERGENCY RECOMMENDATIONS:</strong></p>
+        <p><strong>Urgent Recommendations:</strong></p>
         <ol>
-            <li><strong>Immediate contract review:</strong> Evaluate termination or renegotiation options given the severe underutilization</li>
-            <li><strong>Partner intervention:</strong> Require management committee review of the technology investment</li>
-            <li><strong>Right-sizing:</strong> If continuing, reduce to a per-seat model for the 5-8 attorneys who actually use the platform</li>
-            <li><strong>Root cause analysis:</strong> Commission external consultant to evaluate why adoption has failed so dramatically</li>
+            <li><strong>Immediate review:</strong> Evaluate whether Harvey AI provides sufficient value given the extremely limited usage</li>
+            <li><strong>User interviews:</strong> Identify why users aren't engaging with the platform</li>
+            <li><strong>Targeted training:</strong> If continuing, focus on the 2-3 most valuable features rather than the full platform</li>
+            <li><strong>Leadership alignment:</strong> Ensure practice group leaders are committed to adoption</li>
         </ol>
     </div>
     """, unsafe_allow_html=True)
     
-    # Add a visualization specifically highlighting the extremely low daily unique users
+    # Add a time-based usage trend comparison that matches Harvey's chart pattern
     if not df_daily_filtered.empty:
-        st.markdown('<div class="section-header">📉 Daily Unique Users</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header">📉 Daily Active Users Analysis</div>', unsafe_allow_html=True)
         
         # Calculate daily active users
         daily_active = df_daily_filtered.groupby('Date')['User'].nunique().reset_index()
@@ -681,24 +670,15 @@ def main():
         daily_active['Date'] = pd.to_datetime(daily_active['Date'])
         
         # Calculate the percentage of days with extremely low usage
-        zero_days = (daily_active['Unique Users'] == 0).sum()
-        low_days = ((daily_active['Unique Users'] > 0) & (daily_active['Unique Users'] <= 3)).sum()
-        med_days = ((daily_active['Unique Users'] > 3) & (daily_active['Unique Users'] <= 5)).sum()
-        high_days = (daily_active['Unique Users'] > 5).sum()
         total_days = len(daily_active)
+        zero_days = (daily_active['Unique Users'] == 0).sum()
+        one_to_two_days = ((daily_active['Unique Users'] > 0) & (daily_active['Unique Users'] <= 2)).sum()
+        three_plus_days = (daily_active['Unique Users'] > 2).sum()
         
-        # Create statistics for days with different user counts
-        usage_stats = pd.DataFrame([
-            {'Usage Level': 'Zero Usage (0 users)', 'Days': zero_days, 'Percentage': zero_days/total_days*100},
-            {'Usage Level': 'Extremely Low (1-3 users)', 'Days': low_days, 'Percentage': low_days/total_days*100},
-            {'Usage Level': 'Low (4-5 users)', 'Days': med_days, 'Percentage': med_days/total_days*100},
-            {'Usage Level': 'Moderate (6+ users)', 'Days': high_days, 'Percentage': high_days/total_days*100}
-        ])
-        
-        col1, col2 = st.columns(2)
+        col1, col2 = st.columns([3, 1])
         
         with col1:
-            # Line chart showing the extremely low daily unique users
+            # Line chart showing the daily unique users (matching Harvey's pattern)
             fig_unique = px.line(
                 daily_active, 
                 x='Date', 
@@ -707,12 +687,12 @@ def main():
                 markers=True
             )
             
-            # Add a reference line at y=5 to emphasize how low the numbers are
+            # Add a reference line at y=2 to emphasize how low the typical usage is
             fig_unique.add_hline(
-                y=5, 
+                y=2, 
                 line_dash="dash", 
                 line_color="red",
-                annotation_text="Critical threshold (5 users)", 
+                annotation_text="Typical usage (0-2 users)", 
                 annotation_position="bottom right"
             )
             
@@ -720,7 +700,7 @@ def main():
             fig_unique.update_layout(
                 height=400,
                 yaxis=dict(
-                    range=[0, max(10, daily_active['Unique Users'].max() + 2)],  # Set min range to at least 0-10
+                    range=[0, 10],  # Set range to 0-10 to match Harvey's chart
                     dtick=1  # Show every integer tick mark
                 )
             )
@@ -728,52 +708,40 @@ def main():
             st.plotly_chart(fig_unique, use_container_width=True)
         
         with col2:
-            # Bar chart showing distribution of days by usage level
-            fig_usage = px.bar(
-                usage_stats,
-                x='Usage Level',
-                y='Days',
-                title='Distribution of Days by User Count',
-                color='Usage Level',
-                color_discrete_map={
-                    'Zero Usage (0 users)': '#ef553b',
-                    'Extremely Low (1-3 users)': '#f79e5b',
-                    'Low (4-5 users)': '#fad35c',
-                    'Moderate (6+ users)': '#54a24b'
-                },
-                text='Percentage'
-            )
-            
-            # Format the text to show percentages
-            fig_usage.update_traces(texttemplate='%{text:.1f}%', textposition='outside')
-            fig_usage.update_layout(height=400)
-            
-            st.plotly_chart(fig_usage, use_container_width=True)
-        
-        # Add ROI analysis based on the low user counts
-        annual_cost = 75000  # Estimated annual cost
-        avg_daily_users = daily_active['Unique Users'].mean()
-        cost_per_dau = annual_cost / avg_daily_users
-        
-        st.markdown(f"""
-        <div style="background-color: #f8f9fa; border-radius: 5px; padding: 15px; margin-top: 10px;">
-            <h4 style="margin-top: 0; color: #2c3e50;">💰 Cost Analysis Based on Actual Usage</h4>
-            <p>Based on an estimated annual cost of $75,000 for Harvey AI:</p>
-            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; margin-top: 15px;">
-                <div style="flex-basis: 32%; min-width: 200px; background-color: #fff; padding: 15px; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 10px;">
-                    <p style="font-weight: bold; color: #2c3e50; margin: 0;">Cost per Daily Active User</p>
-                    <p style="font-size: 24px; font-weight: bold; color: #ef553b; margin: 10px 0;">${cost_per_dau:,.2f}</p>
+            # Add usage breakdown
+            st.markdown("""
+            <div style="background-color: #f8f9fa; border-radius: 5px; padding: 15px; height: 400px; display: flex; flex-direction: column; justify-content: center;">
+                <h4 style="margin-top: 0; color: #2c3e50; text-align: center;">Usage Summary</h4>
+                <div style="margin: 10px 0; text-align: center;">
+                    <div style="font-size: 18px; font-weight: bold; margin-bottom: 5px;">Days with zero users</div>
+                    <div style="font-size: 32px; font-weight: bold; color: #ef553b;">{:.0f}%</div>
                 </div>
-                <div style="flex-basis: 32%; min-width: 200px; background-color: #fff; padding: 15px; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 10px;">
-                    <p style="font-weight: bold; color: #2c3e50; margin: 0;">Days with Zero Usage</p>
-                    <p style="font-size: 24px; font-weight: bold; color: #ef553b; margin: 10px 0;">{zero_days} days ({zero_days/total_days*100:.1f}%)</p>
+                <div style="margin: 10px 0; text-align: center;">
+                    <div style="font-size: 18px; font-weight: bold; margin-bottom: 5px;">Days with 1-2 users</div>
+                    <div style="font-size: 32px; font-weight: bold; color: #f79e5b;">{:.0f}%</div>
                 </div>
-                <div style="flex-basis: 32%; min-width: 200px; background-color: #fff; padding: 15px; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 10px;">
-                    <p style="font-weight: bold; color: #2c3e50; margin: 0;">Industry Benchmark Gap</p>
-                    <p style="font-size: 24px; font-weight: bold; color: #ef553b; margin: 10px 0;">-88.9%</p>
+                <div style="margin: 10px 0; text-align: center;">
+                    <div style="font-size: 18px; font-weight: bold; margin-bottom: 5px;">Days with 3+ users</div>
+                    <div style="font-size: 32px; font-weight: bold; color: #636efa;">{:.0f}%</div>
                 </div>
             </div>
-            <p style="margin-top: 15px; font-style: italic;">Note: Industry benchmarks suggest legal AI tools should have at least 35-40% firm-wide adoption with consistent daily usage.</p>
+            """.format(
+                zero_days/total_days*100,
+                one_to_two_days/total_days*100,
+                three_plus_days/total_days*100
+            ), unsafe_allow_html=True)
+        
+        # Add information about usage patterns
+        st.markdown("""
+        <div style="background-color: #f0f2f6; padding: 15px; border-radius: 5px; margin-top: 20px;">
+            <h4 style="margin-top: 0; color: #2c3e50;">Usage Patterns</h4>
+            <p>The data reveals several concerning patterns:</p>
+            <ul>
+                <li><strong>Extended Zero-Usage Periods:</strong> March and April show almost entire weeks with no platform activity</li>
+                <li><strong>Inconsistent Engagement:</strong> Usage spikes briefly then drops to zero, suggesting users try the platform but don't adopt it</li>
+                <li><strong>Minimal Baseline:</strong> Even after several months, there's no establishment of a consistent user base</li>
+                <li><strong>Single-User Days:</strong> Many days show just a single user accessing the platform</li>
+            </ul>
         </div>
         """, unsafe_allow_html=True)
     
