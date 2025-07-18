@@ -47,15 +47,15 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 @st.cache_data
-def load_user_stats(uploaded_file):
+def load_user_stats():
     """Load user statistics CSV data"""
-    df = pd.read_csv(uploaded_file)
+    df = pd.read_csv('user_stats_03_04_202507_18_2025.csv')
     return df
 
 @st.cache_data
-def load_daily_usage(uploaded_file):
+def load_daily_usage():
     """Load daily usage Excel data"""
-    df = pd.read_excel(uploaded_file)
+    df = pd.read_excel('harveyusagestart_20250304_end_20250718.xlsx')
     df['Time'] = pd.to_datetime(df['Time'])
     df['Date'] = df['Time'].dt.date
     df['Hour'] = df['Time'].dt.hour
