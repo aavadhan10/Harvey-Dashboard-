@@ -47,15 +47,15 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 @st.cache_data
-def load_user_stats():
+def load_user_stats(uploaded_file):
     """Load user statistics CSV data"""
-    df = pd.read_csv('user_stats_03_04_202507_18_2025.csv')
+    df = pd.read_csv(uploaded_file)
     return df
 
 @st.cache_data
-def load_daily_usage():
+def load_daily_usage(uploaded_file):
     """Load daily usage Excel data"""
-    df = pd.read_excel('harveyusagestart_20250304_end_20250718.xlsx')
+    df = pd.read_excel(uploaded_file)
     df['Time'] = pd.to_datetime(df['Time'])
     df['Date'] = df['Time'].dt.date
     df['Hour'] = df['Time'].dt.hour
@@ -82,13 +82,45 @@ def main():
     # Header
     st.markdown('<h1 class="main-header">⚖️ Harvey AI Usage Dashboard - Rimon Law</h1>', unsafe_allow_html=True)
     
+    # File upload section
+    st.markdown('<div class="section-header">📁 Upload Data Files</div>', unsafe_allow_html=True)
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        csv_file = st.file_uploader(
+            "Upload User Statistics CSV",
+            type=['csv'],
+            help="Upload the user_stats_03_04_202507_18_2025.csv file"
+        )
+    
+    with col2:
+        excel_file = st.file_uploader(
+            "Upload Daily Usage Excel",
+            type=['xlsx', 'xls'],
+            help="Upload the harveyusagestart_20250304_end_20250718.xlsx file"
+        )
+    
+    # Check if both files are uploaded
+    if csv_file is None or excel_file is None:
+        st.info("👆 Please upload both data files to proceed with the dashboard.")
+        st.markdown("""
+        **Required files:**
+        - User Statistics CSV: `user_stats_03_04_202507_18_2025.csv`
+        - Daily Usage Excel: `harveyusagestart_20250304_end_20250718.xlsx`
+        """)
+        return
+    
     # Load data
     try:
-        df_users = load_user_stats()
-        df_daily = load_daily_usage()
-    except FileNotFoundError as e:
-        st.error(f"Could not load data files: {e}")
-        st.info("Please ensure both 'user_stats_03_04_202507_18_2025.csv' and 'harveyusagestart_20250304_end_20250718.xlsx' are uploaded.")
+        df_users = load_user_stats(csv_file)
+        df_daily = load_daily_usage(excel_file)
+        
+        st.success("✅ Data files loaded successfully!")
+        
+    except Exception as e:
+        st.error(f"❌ Error loading data files: {e}")
+        st.info("Please check that the files are in the correct format and try again.")
         return
     
     # Sidebar filters
